@@ -1,0 +1,7 @@
+openai
+chromadb
+langchain-community
+langchain-core
+langchain-text-splitters
+pypdf
+pydantic-settings

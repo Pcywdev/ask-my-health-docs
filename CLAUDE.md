@@ -1,6 +1,5 @@
 # Project Name
-
-One-sentence description of what this project is and does.
+"Ask My Docs" — production RAG over exercise science and public health guideline.
 
 ## Tech Stack
 - Backend: FastAPI, Python 3.11
