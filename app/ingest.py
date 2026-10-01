@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-
 import chromadb
 from chromadb.api.models.Collection import Collection
 from langchain_community.document_loaders import PyPDFLoader
@@ -125,7 +124,7 @@ def store_chunks(chunks: list[Document], embeddings: list[list[float]]) -> int:
         '''
         Re-ingesting after chaging chunking settings (size and overlap):
         Old IDs that no longer exist stay in Chromadb
-        Best practice: Delete the collection first before re-ingesting
+        Best practice: Delete the collection first before
         '''
         collection.upsert(
             ids=[

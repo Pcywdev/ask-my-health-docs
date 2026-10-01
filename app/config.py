@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     chunk_overlap: int = 200
     embed_batch_size: int = 100
 
+    # Generation
+    llm_model: str = "gpt-4o-mini"
+    prompt_path: str = "prompts/rag_prompt.yaml"
+
     class Config:
         env_file = ".env"
 
