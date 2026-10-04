@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     openai_api_key: str
-    cohere_api_key: str = ""
+    cohere_api_key: str
     chroma_path: str = "./chroma_db"
 
     # Ingestion
@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     # Generation
     llm_model: str = "gpt-4o-mini"
     prompt_path: str = "prompts/rag_prompt.yaml"
+
+    # Hybrid retrieval
+    candidate_k: int = 20
+    rerank_model: str = "rerank-v3.5"
 
     class Config:
         env_file = ".env"
