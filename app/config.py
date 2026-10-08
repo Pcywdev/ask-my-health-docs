@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     openai_api_key: str
     cohere_api_key: str
     chroma_path: str = "./chroma_db"
+    database_url: str
 
     # Ingestion
     raw_data_dir: str = "data/raw"

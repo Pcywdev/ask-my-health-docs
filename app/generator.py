@@ -31,12 +31,11 @@ def build_context(chunks: list[dict[str, Any]]) -> str:
     return "\n\n".join(blocks)
 
 
-def extract_cited_sources(
-    answer: str, chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Return the chunks the answer cites, labelled with their ``Source N`` number.
+def _cited_numbers(answer: str) -> set[int]:
+    """Return the distinct source numbers the answer cites.
 
-    Handles ``[Source 1]``, ``[Source 1, 2]`` and ``[Source 1][Source 3]``.
-    Numbers that do not match a chunk are ignored.
+    Shared by ``extract_cited_sources`` and ``validate_citation`` so both parse
+    citations identically.
     """
     cited: set[int] = set()
     # findall on the answer returns every full citation as a string -> ["[Source 1, 3]", "[Source 2]", "[Source 9]"]
@@ -45,6 +44,16 @@ def extract_cited_sources(
         # "[Source 1, 3]" becomes ["1", "3"]
         # A set removes duplicates, so citing Source 1 three times still yields one entry.
         cited.update(int(number) for number in re.findall(r"\d+", citation))
+    return cited
+
+
+def extract_cited_sources(
+    answer: str, chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return the chunks the answer cites, labelled with their ``Source N`` number.
+
+    Handles ``[Source 1]``, ``[Source 1, 2]`` and ``[Source 1][Source 3]``.
+    Numbers that do not match a chunk are ignored.
+    """
     return [
         {
             "label": n,
@@ -53,17 +62,39 @@ def extract_cited_sources(
             "page": chunks[n - 1]["page"],
             "text": chunks[n - 1]["text"],
         }
-        for n in sorted(cited) if 1 <= n <= len(chunks)
+        for n in sorted(_cited_numbers(answer)) if 1 <= n <= len(chunks)
         # safety guard. Drops numbers that don't match a chunk
     ]
+
+
+# Checks the model's [Source N] tags against the chunks it was actually given
+def validate_citation(answer: str, chunks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Report how many of the answer's citations point at a real chunk.
+
+    A citation is valid when its number falls in ``1..len(chunks)``; anything
+    else was fabricated by the model. Counts distinct source numbers, so citing
+    ``[Source 1]`` twice counts once. ``citation_accuracy`` is 0.0 when nothing
+    was cited (undefined rather than perfect), so use ``has_citation`` to tell a
+    refusal apart from a badly cited answer.
+    """
+    cited_numbers = _cited_numbers(answer)
+    valid = {n for n in cited_numbers if 1 <= n <= len(chunks)}
+    return {
+        "total_citations": len(cited_numbers),
+        "valid_citations": len(valid),
+        "fabricated_citations": len(cited_numbers) - len(valid),
+        "citation_accuracy": len(valid) / len(cited_numbers) if cited_numbers else 0.0,
+        "has_citation": len(cited_numbers) > 0,
+    }
 
 # Generates an answer to a query -> cites chunks that are actually relevant
 def generate_answer(query: str, chunks: list[dict[str, Any]]) -> dict[str, Any]:
     """Answer ``query`` from ``chunks`` and return the answer plus cited sources.
 
-    Returns ``{"answer": str, "sources": list[dict]}``. ``sources`` holds only
-    the chunks the model cited, and is empty if it cited none (for example when
-    it says the sources do not contain the answer).
+    Returns ``{"answer": str, "sources": list[dict], "citation_report": dict}``.
+    ``sources`` holds only the chunks the model cited, and is empty if it cited
+    none (for example when it says the sources do not contain the answer).
+    ``citation_report`` is ``validate_citation``'s verdict on those citations.
     """
     prompt = load_prompt()
     # Building the user message
@@ -78,7 +109,11 @@ def generate_answer(query: str, chunks: list[dict[str, Any]]) -> dict[str, Any]:
     )
     # answer: Ordinary prose with [Source N] tags inline
     answer = response.choices[0].message.content or ""
-    return {"answer": answer, "sources": extract_cited_sources(answer, chunks)}
+    return {
+        "answer": answer,
+        "sources": extract_cited_sources(answer, chunks),
+        "citation_report": validate_citation(answer, chunks),
+    }
 
 """
 if __name__ == "__main__":
