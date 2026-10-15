@@ -2,7 +2,7 @@
 "Ask My Docs" — production RAG over exercise science and public health guideline.
 
 ## Tech Stack
-- Backend: FastAPI, Python 3.11
+- Backend: FastAPI, Python 3.12
 - Vector store: ChromaDB
 - Database: PostgreSQL + SQLAlchemy
 - Task queue: Celery + Redis
