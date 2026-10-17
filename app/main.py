@@ -1,6 +1,7 @@
 """FastAPI backend: HTTP routes over the ingest -> retrieve -> generate pipeline."""
 
 import logging
+import time
 from datetime import datetime
 
 import openai
@@ -8,8 +9,15 @@ from chromadb.errors import NotFoundError
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.exc import SQLAlchemyError
-from app.db import QueryLog, citation_stats, fabricated_queries, log_query, recent_queries
-from app.generator import generate_answer
+
+from app.db import (
+    QueryLog,
+    citation_stats,
+    fabricated_queries,
+    log_query,
+    recent_queries,
+)
+from app.generator import generate_answer, load_prompt
 from app.ingest import ingest
 from app.retriever import retrieve
 
@@ -149,8 +157,10 @@ def health() -> dict[str, str]:
 def query(request: QueryRequest) -> QueryResponse:
     """Retrieve the top-k chunks for the question and answer with citations."""
     try:
+        started = time.perf_counter()
         chunks = retrieve(request.question, request.top_k)
         result = generate_answer(request.question, chunks)
+        latency_ms = int((time.perf_counter() - started) * 1000)
     except NotFoundError:
         raise HTTPException(
             status_code=503, detail="Index not built. Run POST /ingest first."
@@ -163,7 +173,7 @@ def query(request: QueryRequest) -> QueryResponse:
 
     # A database outage must not cost the user an answer that is already paid for
     try:
-        log_query(request.question, result, num_sources=len(chunks))
+        log_query(request.question, result, chunks, request.top_k, latency_ms, load_prompt()["version"])
     except SQLAlchemyError:
         logger.exception("Failed to log query to the database")
 

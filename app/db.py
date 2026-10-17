@@ -4,10 +4,12 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     DateTime,
     Float,
+    ForeignKey,
     Integer,
     Select,
     String,
@@ -16,9 +18,12 @@ from sqlalchemy import (
     func,
     select,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.config import settings
+
+JsonType = JSON().with_variant(JSONB(), "postgresql")
 
 # create_engine does not connect, so importing this module works with the
 # database down; pool_pre_ping discards connections that died while idle.
@@ -43,33 +48,81 @@ class QueryLog(Base):
     valid_citations = Column(Integer)
     citation_accuracy = Column(Float)
     has_citations = Column(Boolean)
+    retrieved_ids = Column(JsonType)     # chunk ids, final rank order
+    rerank_scores = Column(JsonType)     # [null, ...] when the Cohere fallback fired
+    top_k = Column(Integer)
+    reranked = Column(Boolean)           # False = served in RRF order
+    prompt_version = Column(String)
+    llm_model = Column(String)
+    embedding_model = Column(String)
+    latency_ms = Column(Integer)
+    
     # timezone=True keeps the UTC offset; a naive column would silently drop it
     created_at = Column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        server_default=func.now(),       # non-ORM inserts no longer get NULL
+        index=True,                      # /history orders and filters on this
     )
+    
+
+class EvalRun(Base):
+    """One execution of the eval runner."""
+    __tablename__ = "eval_runs"
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    label = Column(String)
+    git_sha = Column(String)
+    config = Column(JsonType, nullable=False)   # chunk_size, overlap, models, candidate_k, top_k, prompt_version
+    eval_set_size = Column(Integer)
+    summary = Column(JsonType)                  # aggregate scores
 
 
-def init_db() -> None:
-    """Create the ``query_logs`` table if it does not exist."""
-    Base.metadata.create_all(engine)
+class EvalResult(Base):
+    """One question's outcome within an eval run."""
+    __tablename__ = "eval_results"
+    id = Column(Integer, primary_key=True)
+    run_id = Column(Integer, ForeignKey("eval_runs.id", ondelete="CASCADE"),
+                    nullable=False, index=True)
+    question_id = Column(String, nullable=False)
+    question = Column(String, nullable=False)
+    answer = Column(Text)
+    retrieved_ids = Column(JsonType)
+    contexts = Column(JsonType)        # chunk texts the judge scored against
+    reranked = Column(Boolean)
+    gold_hit = Column(Boolean)         # custom: gold page in the top-k
+    citation_accuracy = Column(Float)  # custom
+    metrics = Column(JsonType)         # RAGAS scores; names change between versions
+    latency_ms = Column(Integer)
+    error = Column(Text)
 
 
-def log_query(question: str, result: dict[str, Any], num_sources: int) -> int:
-    """Store one answered query and its citation metrics; return the row id.
+def log_query(question: str, result: dict[str, Any], chunks: list[dict[str, Any]],
+              top_k: int, latency_ms: int, prompt_version: str) -> int:
+    """Store one answered query, its citation metrics and retrieval trace; return the row id.
 
     ``result`` is a whole ``generate_answer`` return value, so the metric fields
-    cannot be mismatched by the caller. ``num_sources`` is the number of chunks
-    retrieved, which is not part of that result.
+    cannot be mismatched by the caller. ``chunks`` is what ``retrieve`` returned:
+    its ids, rerank scores and count are stored, and ``reranked`` is False when
+    the Cohere fallback served RRF order. ``latency_ms`` covers retrieval plus
+    generation; ``prompt_version`` comes from the prompt YAML.
     """
     report = result["citation_report"]
     row = QueryLog(
-        question=question,
-        answer=result["answer"],
-        num_sources=num_sources,
+        question=question, answer=result["answer"],
+        num_sources=len(chunks),
         total_citations=report["total_citations"],
         valid_citations=report["valid_citations"],
         citation_accuracy=report["citation_accuracy"],
         has_citations=report["has_citation"],
+        retrieved_ids=[c["id"] for c in chunks],
+        rerank_scores=[c.get("rerank_score") for c in chunks],
+        top_k=top_k,
+        reranked=bool(chunks) and all("rerank_score" in c for c in chunks),
+        prompt_version=prompt_version,
+        llm_model=settings.llm_model,
+        embedding_model=settings.embedding_model,
+        latency_ms=latency_ms,
     )
     with SessionLocal() as session:
         try:
