@@ -74,7 +74,12 @@ Full design, data flow and schema: `docs/architecture.md`.
 - On each update: tick the roadmap item, refresh "Now / Next up" and the date line. Touch `architecture.md` only if structure, data flow, schema or a key decision changed.
 - Put doc updates in the same PR as the change they describe.
 
-## Working with Claude
+## Record notes
+- `docs/record_notes.md` — the user's study notes: one short section per finished stage, with the technical concepts behind it (what the technique is, why it was chosen, gotchas).
+- Keep it current: whenever a vital step or feature lands (a new pipeline stage, route, schema change, tool or finished roadmap step), add or update its section in the same change and refresh the "Last updated" date and "Still to come".
+- Style: compact, conceptual, plain language; define each technique in a line or two. Don't duplicate `architecture.md` or `ROADMAP.md`; link to them by plain path.
+
+## Claude workflow
 - Plan before implementing; for multi-step work, write the plan and wait for approval.
 - The user runs commits, pushes and PRs. Claude hands over the exact commands and doesn't stage or commit unless asked.
 - Explain in plain, conceptual language and keep it short.
