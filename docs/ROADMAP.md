@@ -1,14 +1,14 @@
 # Roadmap
 
 Where the project stands. Update after each milestone (see CLAUDE.md, Documentation).
-Last updated: 2026-11-01 · branch `chore/ruff-cleanup` · Alembic head `a9d742709640`
+Last updated: 2026-11-01 · branch `test/unit-tests` · Alembic head `a9d742709640`
 
 Legend: [x] finished · [~] in progress · [ ] not started
 
 ## Now / Next up
-- **Now:** [~] Lint cleanup (`chore/ruff-cleanup`), awaiting commit and PR
-- **Next up:** step 8 (tests)
-- **Then:** write the eval set (you), then `run_eval.py`, then Docker + CI
+- **Now:** [~] Step 8, tests (`test/unit-tests`), awaiting commit and PR
+- **Next up:** step 9: write the eval set (you), then `run_eval.py`
+- **Then:** Docker + CI
 
 ## Done
 - [x] Ingestion: PDFs → chunks → embeddings → Chroma (843 chunks, 2 documents) · tag `phase-1-complete`
@@ -21,10 +21,11 @@ Legend: [x] finished · [~] in progress · [ ] not started
 - [x] Schema: retrieval trace on `query_logs`, `eval_runs` + `eval_results`, first real Alembic migration, verified live · PR #2
 - [x] `ragas` import fix: `langchain-community` pinned `<0.4` · PR #3
 - [x] Docs: `docs/architecture.md`, `docs/ROADMAP.md`, CLAUDE.md update · PR #4
+- [x] Study notes: `docs/record_notes.md` + keep-updated rule in CLAUDE.md · PR #5
+- [x] Lint cleanup: `ruff check .` clean · PR #6
 
 ## Remaining (in order)
-- [~] **Lint cleanup** — `ruff check . --fix` applied (import order, `datetime.UTC`, `X | Y` annotations, stale `noqa`); `ruff check .` clean, `alembic check` clean (branch `chore/ruff-cleanup`)
-- [ ] **Step 8, tests** — `pytest.ini`, `tests/conftest.py`; tests for RRF, citation parsing, stats aggregate; delete `app/test.py`
+- [~] **Step 8, tests** — `pytest.ini`, `tests/conftest.py` (dummy env, in-memory SQLite); 32 offline tests + 1 strict xfail for the `[Source 1-3]` range bug: RRF, `retrieve()` Cohere fallback, citation parsing, stats aggregate, `/query` survives a logging failure; `app/test.py` deleted (branch `test/unit-tests`)
 - [ ] **Step 9, eval** — `eval/eval_set.json` (30–50 questions, page-level gold labels, ~20% unanswerable), `eval/thresholds.json` (set by you), `eval/run_eval.py` (custom metrics + RAGAS, writes `eval_runs` / `eval_results`)
 - [ ] **Step 10, Docker + CI** — `Dockerfile`, `docker-compose.yml`, `.github/workflows/ci.yml` (ruff, `alembic upgrade head`, `alembic check`, pytest)
 - [ ] **Later** — Celery + Redis, Streamlit frontend

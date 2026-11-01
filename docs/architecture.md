@@ -151,4 +151,4 @@ erDiagram
 | Pin `langchain-community<0.4` | ragas imports a module removed in 0.4 |
 
 ## Not built yet
-Tests, eval set and runner, authentication on `/history` and `/ingest`, Docker, CI, Celery + Redis, Streamlit. See `ROADMAP.md`.
+Eval set and runner, authentication on `/history` and `/ingest`, Docker, CI, Celery + Redis, Streamlit. See `ROADMAP.md`.
