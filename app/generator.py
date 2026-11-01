@@ -3,7 +3,9 @@ import re
 from functools import cache
 from pathlib import Path
 from typing import Any
+
 import yaml
+
 from app.config import settings
 from app.ingest import openai_client
 

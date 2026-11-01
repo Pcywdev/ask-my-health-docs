@@ -2,11 +2,11 @@
 
 import logging
 import re
-import cohere
-from cohere.core.api_error import ApiError
 from functools import lru_cache
 from typing import Any
 
+import cohere
+from cohere.core.api_error import ApiError
 from rank_bm25 import BM25Okapi
 
 from app.config import settings

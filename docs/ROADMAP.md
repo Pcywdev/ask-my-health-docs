@@ -1,13 +1,13 @@
 # Roadmap
 
 Where the project stands. Update after each milestone (see CLAUDE.md, Documentation).
-Last updated: 2026-10-20 · branch `main` · Alembic head `a9d742709640`
+Last updated: 2026-11-01 · branch `chore/ruff-cleanup` · Alembic head `a9d742709640`
 
 Legend: [x] finished · [~] in progress · [ ] not started
 
 ## Now / Next up
-- **Now:** [~] Project docs (`docs/`, CLAUDE.md)
-- **Next up:** `chore/ruff-cleanup` (14 auto-fixable lint findings), then step 8 (tests)
+- **Now:** [~] Lint cleanup (`chore/ruff-cleanup`), awaiting commit and PR
+- **Next up:** step 8 (tests)
 - **Then:** write the eval set (you), then `run_eval.py`, then Docker + CI
 
 ## Done
@@ -20,10 +20,10 @@ Legend: [x] finished · [~] in progress · [ ] not started
 - [x] Dependencies: hand-written `requirements.txt` / `requirements-dev.txt` · PR #1
 - [x] Schema: retrieval trace on `query_logs`, `eval_runs` + `eval_results`, first real Alembic migration, verified live · PR #2
 - [x] `ragas` import fix: `langchain-community` pinned `<0.4` · PR #3
+- [x] Docs: `docs/architecture.md`, `docs/ROADMAP.md`, CLAUDE.md update · PR #4
 
 ## Remaining (in order)
-- [~] **Docs** — `docs/architecture.md`, `docs/ROADMAP.md`, CLAUDE.md update (branch `docs/project-docs`)
-- [ ] **Lint cleanup** — `ruff check . --fix`, review the diff (branch `chore/ruff-cleanup`)
+- [~] **Lint cleanup** — `ruff check . --fix` applied (import order, `datetime.UTC`, `X | Y` annotations, stale `noqa`); `ruff check .` clean, `alembic check` clean (branch `chore/ruff-cleanup`)
 - [ ] **Step 8, tests** — `pytest.ini`, `tests/conftest.py`; tests for RRF, citation parsing, stats aggregate; delete `app/test.py`
 - [ ] **Step 9, eval** — `eval/eval_set.json` (30–50 questions, page-level gold labels, ~20% unanswerable), `eval/thresholds.json` (set by you), `eval/run_eval.py` (custom metrics + RAGAS, writes `eval_runs` / `eval_results`)
 - [ ] **Step 10, Docker + CI** — `Dockerfile`, `docker-compose.yml`, `.github/workflows/ci.yml` (ruff, `alembic upgrade head`, `alembic check`, pytest)

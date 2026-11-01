@@ -1,6 +1,6 @@
 """Persistence: log every answered query with its citation quality metrics."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import (
@@ -60,7 +60,7 @@ class QueryLog(Base):
     # timezone=True keeps the UTC offset; a naive column would silently drop it
     created_at = Column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         server_default=func.now(),       # non-ORM inserts no longer get NULL
         index=True,                      # /history orders and filters on this
     )
@@ -154,7 +154,7 @@ select(QueryLog)                      →  SELECT * FROM query_logs
 def _window(stmt: Select, days: int | None) -> Select:
     """Limit ``stmt`` to rows created in the last ``days``; all rows if None."""
     if days is not None:
-        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+        cutoff = datetime.now(UTC) - timedelta(days=days)
         stmt = stmt.where(QueryLog.created_at >= cutoff)
     # days = None -> Hands back query untouched
     return stmt
