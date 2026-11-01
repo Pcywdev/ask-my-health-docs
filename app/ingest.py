@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+
 import chromadb
 from chromadb.api.models.Collection import Collection
 from langchain_community.document_loaders import PyPDFLoader
