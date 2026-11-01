@@ -43,6 +43,19 @@ Cheap wide net first (recall), expensive precise step last (precision).
 - Leaked key revoked and purged from git history; `.env` ignored, `.env.example` is the template.
 - Hand-written `requirements*.txt`; `langchain-community<0.4` pinned so ragas imports.
 - One branch per task, Conventional Commits, squash-merge, phase tags.
+- Ruff (linter) auto-fixes: import order (isort rules), `datetime.UTC`, `X | Y` instead of `Union`, stale `noqa` comments.
+
+## 7. Offline unit tests
+Goal: prove our logic is right in seconds, with no network, no cost, no real database. These run in CI on every PR.
+- **Unit test:** one function checked in isolation. The vendors (OpenAI, Cohere, Postgres) are replaced by fakes, so a test checks *our decision*, not their API.
+- **Env before import:** `conftest.py` sets dummy keys and a temp `CHROMA_PATH` before `app` is imported, because settings and API clients are built at import time. Assigned, not `setdefault`, so a real `.env` key can never leak in. A guard test fails if the dummy values are not active.
+- **Monkeypatch:** swaps a function for a fake for one test, then restores it. Used to fake `vector_search`, `bm25_search` and `cohere_client.rerank`, so `retrieve()` runs end to end offline.
+- **Testing the fallback:** the fake Cohere raises `ApiError`; the test asserts RRF order comes back, no `rerank_score`, and a warning is logged.
+- **SQLite instead of Postgres:** `JsonType` lets the same models run on SQLite. `StaticPool` is needed: an in-memory SQLite database exists per connection, so without it each connection sees empty tables. Limit: SQLite `avg()` returns float, so the Postgres `Decimal` gotcha and JSONB are not covered offline.
+- **`xfail(strict=True)`:** documents a known bug as a test. Suite stays green while the bug exists, then fails loudly when someone fixes it, telling you to delete the marker. Used for `[Source 1-3]` parsing as {1, 3}.
+- **Mutation check:** break the code on purpose (RRF `1/(k+rank)` → `1/rank`) and confirm tests fail. Proves the tests can actually catch a regression.
+- Invariants now pinned: Cohere failure degrades to RRF order; a logging failure never fails `/query`; refusals score 0.0 and drag down only the all-rows mean.
+- Gotcha: the report key is `has_citation`, the DB column is `has_citations`.
 
 ## Still to come
-Ruff cleanup → tests → eval set and runner → Docker + CI → Celery/Redis, Streamlit.
+Eval set and runner → Docker + CI → Celery/Redis, Streamlit.
