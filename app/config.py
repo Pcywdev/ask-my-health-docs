@@ -23,6 +23,11 @@ class Settings(BaseSettings):
     candidate_k: int = 20
     rerank_model: str = "rerank-v3.5"
 
+    # Evaluation (eval/run_eval.py)
+    eval_judge_model: str = "gpt-4o-mini"
+    eval_top_k: int = 5
+    eval_rerank_delay_s: float = 6.5  # trial Cohere keys allow ~10 rerank calls/min
+
     class Config:
         env_file = ".env"
 

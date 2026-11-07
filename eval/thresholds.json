@@ -1,0 +1,12 @@
+{
+  "hit@k": 0.95,
+  "mrr": 0.72,
+  "cited_gold": 0.9,
+  "citation_accuracy": 0.95,
+  "correct_refusal_rate": 0.85,
+  "false_refusal_rate_max": 0.07,
+  "faithfulness": 0.9,
+  "answer_relevancy": null,
+  "context_precision": 0.9,
+  "context_recall": 0.9
+}

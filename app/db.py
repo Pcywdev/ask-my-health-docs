@@ -135,6 +135,49 @@ def log_query(question: str, result: dict[str, Any], chunks: list[dict[str, Any]
     # expire_of_commit = False on the session maker lets you still read row.id after the with block closes
 
 
+# --- Writing eval runs (eval/run_eval.py) ------------------------------------
+
+
+def create_eval_run(label: str | None, git_sha: str | None, config: dict[str, Any],
+                    eval_set_size: int) -> int:
+    """Open an ``eval_runs`` row before any question is scored; return its id.
+
+    ``summary`` stays NULL until ``finish_eval_run``, so a crashed run is
+    visible as a row without a summary.
+    """
+    row = EvalRun(label=label, git_sha=git_sha, config=config, eval_set_size=eval_set_size)
+    with SessionLocal() as session:
+        session.add(row)
+        session.commit()
+    return row.id
+
+
+def add_eval_results(run_id: int, results: list[dict[str, Any]]) -> None:
+    """Store one ``eval_results`` row per question, in a single transaction.
+
+    Each dict holds ``EvalResult`` column values (``question_id``, ``question``,
+    ``answer``, ``retrieved_ids``, ``contexts``, ``reranked``, ``gold_hit``,
+    ``citation_accuracy``, ``metrics``, ``latency_ms``, ``error``).
+    """
+    with SessionLocal() as session:
+        try:
+            session.add_all(EvalResult(run_id=run_id, **result) for result in results)
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+
+
+def finish_eval_run(run_id: int, summary: dict[str, Any]) -> None:
+    """Attach the aggregate scores to a finished run."""
+    with SessionLocal() as session:
+        run = session.get(EvalRun, run_id)
+        if run is None:
+            raise ValueError(f"eval run {run_id} does not exist")
+        run.summary = summary
+        session.commit()
+
+
 # --- Reading the log: citation quality stats ---------------------------------
 
 # fabricated citations are not stored; they are total minus valid
