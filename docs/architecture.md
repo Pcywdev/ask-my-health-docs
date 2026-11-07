@@ -154,5 +154,16 @@ erDiagram
 | Pin `langchain-community<0.4` | ragas imports a module removed in 0.4 |
 | Fail an eval run that used the RRF fallback | Cohere rate limits would otherwise silently lower scores |
 
+## Running it
+| Where | How | Database |
+|---|---|---|
+| Local dev | `uvicorn app.main:app --reload` in the `askdocs` env | native Postgres 17 on 5432 |
+| Docker | `docker compose up --build`: runs `alembic upgrade head`, then uvicorn on 127.0.0.1:8000 | its own Postgres 17 on 127.0.0.1:5433, empty at first |
+| CI | `.github/workflows/ci.yml` on every PR and push to `main`: ruff, migration round trip, pytest, `docker build` | throwaway Postgres 17 service |
+
+- The image holds runtime dependencies only. `chroma_db/` and `data/raw/` are bind-mounted, never copied in; `.env` is excluded by `.dockerignore` and passed at run time.
+- Ports bind to 127.0.0.1 because `/history` and `/ingest` have no authentication.
+- CI uses dummy keys and never calls OpenAI or Cohere; the eval stays a local step.
+
 ## Not built yet
-Thresholds (set after the baseline), authentication on `/history` and `/ingest`, Docker, CI, Celery + Redis, Streamlit. See `ROADMAP.md`.
+Authentication on `/history` and `/ingest`, Celery + Redis, Streamlit. See `ROADMAP.md`.

@@ -8,7 +8,8 @@
 - Generation: OpenAI `gpt-4o-mini`, temperature 0
 - Database: PostgreSQL 17 (native Windows service) + SQLAlchemy 2.0 + Alembic
 - Eval: RAGAS + custom metrics
-- Planned, not built yet: Celery + Redis, Streamlit, Docker Compose, GitHub Actions CI
+- Containers and CI: Docker Compose (API + its own Postgres 17), GitHub Actions
+- Planned, not built yet: Celery + Redis, Streamlit
 
 ## Environment
 - Always use the `askdocs` conda env. The default `python` and the old `openaitest` env have the wrong packages.
@@ -23,7 +24,7 @@
 - Run eval: `python eval/run_eval.py`
 - Lint: `ruff check .`
 - Migrations: `alembic upgrade head` · new migration: `alembic revision --autogenerate -m "..."` · verify: `alembic check`
-- Docker: `docker compose up --build` (planned)
+- Docker: `docker compose up --build` (API on 127.0.0.1:8000, its own Postgres on 127.0.0.1:5433; `docker compose down` to stop)
 
 ## Architecture
 Full design, data flow and schema: `docs/architecture.md`.

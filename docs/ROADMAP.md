@@ -1,14 +1,14 @@
 # Roadmap
 
 Where the project stands. Update after each milestone (see CLAUDE.md, Documentation).
-Last updated: 2026-11-08 · branch `feat/eval-runner` · Alembic head `a9d742709640`
+Last updated: 2026-11-08 · branch `ci/docker-and-ci` · Alembic head `a9d742709640`
 
 Legend: [x] finished · [~] in progress · [ ] not started
 
 ## Now / Next up
-- **Now:** [~] Step 9, eval: done, awaiting commit and PR (`feat/eval-runner`)
-- **Next up:** step 10, Docker + CI
-- **Then:** fix the eval findings in Open issues (cross-document retrieval, q027), each with a before/after eval
+- **Now:** [~] Step 10, Docker + CI (`ci/docker-and-ci`): CI steps verified locally on a scratch DB; `docker compose up` verified (`/health`, `/history`, 843 chunks mounted, no `.env` in image); awaiting commit and PR
+- **Next up:** fix the eval findings in Open issues, each with a before/after eval
+- **Then:** Celery + Redis, Streamlit frontend
 
 ## Done
 - [x] Ingestion: PDFs → chunks → embeddings → Chroma (843 chunks, 2 documents) · tag `phase-1-complete`
@@ -24,10 +24,10 @@ Legend: [x] finished · [~] in progress · [ ] not started
 - [x] Study notes: `docs/record_notes.md` + keep-updated rule in CLAUDE.md · PR #5
 - [x] Lint cleanup: `ruff check .` clean · PR #6
 - [x] Step 8, offline unit tests (RRF, citations, stats, Cohere fallback, `/query` resilience) · PR #7
+- [x] Step 9, eval: runner (custom metrics + RAGAS, threshold gate), 40-question gold set v1.3, baseline × 3, thresholds set · PR #8
 
 ## Remaining (in order)
-- [~] **Step 9, eval** — `eval/run_eval.py` (custom metrics + RAGAS, threshold gate), `metrics.py`, `dataset.py`, `find_pages.py`, `README.md`; eval set v1.3 (40 questions, 8 unanswerable); baseline × 3 (eval runs 3–5, retrieval metrics identical across runs, judge metrics within ±0.01); thresholds set in `eval/thresholds.json`; 30 new offline tests (branch `feat/eval-runner`)
-- [ ] **Step 10, Docker + CI** — `Dockerfile`, `docker-compose.yml`, `.github/workflows/ci.yml` (ruff, `alembic upgrade head`, `alembic check`, pytest)
+- [~] **Step 10, Docker + CI** — `.github/workflows/ci.yml` (ruff, migration round trip on Postgres 17, pytest, `docker build`), `Dockerfile` (runtime deps only, non-root), `.dockerignore`, `docker-compose.yml` (API + own Postgres on 127.0.0.1:5433, index mounted) (branch `ci/docker-and-ci`)
 - [ ] **Later** — Celery + Redis, Streamlit frontend
 
 ## Open issues
