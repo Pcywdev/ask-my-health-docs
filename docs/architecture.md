@@ -27,7 +27,7 @@ A FastAPI service that answers questions about exercise science and public healt
 - `app/db.py` — models `QueryLog`, `EvalRun`, `EvalResult`; `log_query`; the `/history` readers `citation_stats`, `recent_queries`, `fabricated_queries`.
 - `app/main.py` — routes `/health`, `/query`, `/ingest`, `/history`, plus the request and response models.
 - `alembic/` — `env.py` takes the database URL from settings and the models' metadata as its target; `versions/` holds migrations.
-- `eval/` — evaluation set and runner (empty so far).
+- `eval/` — `eval_set.json` (questions with page-level gold labels), `dataset.py` (load + validate), `metrics.py` (hit@k, MRR, page recall, cited-gold, refusal, summary, threshold check), `run_eval.py` (CLI runner), `find_pages.py` (phrase → indexed page lookup), `thresholds.json`.
 
 ## Data flow: ingestion
 ```mermaid
@@ -63,6 +63,9 @@ sequenceDiagram
 - The answer's `[Source N]` numbers index into the chunks the model was shown, in order.
 - `citation_report` checks that each N is in range. It does **not** check that the source supports the claim.
 - Failures: Chroma collection missing → 503; OpenAI error → 502; database logging error → ignored.
+
+## Data flow: an eval run
+`run_eval.py` validates the set against the pages in Chroma, opens an `eval_runs` row (label, git sha, full config), then per question calls `retrieve()` and `generate_answer()` directly (never `/query`). Custom metrics compare retrieved and cited `(source, page)` pairs with the gold pages; RAGAS (`gpt-4o-mini` judge) scores faithfulness, answer relevancy, context precision and context recall on answered, answerable questions. One `eval_results` row per question, the summary on `eval_runs`, then exit 1 if a threshold in `thresholds.json` is missed, a question errored, or Cohere fell back to RRF order (run not comparable). Rerank calls are spaced by `eval_rerank_delay_s` for trial Cohere keys.
 
 ## Data flow: `GET /history`
 `citation_stats` is one aggregate query (`FILTER (WHERE ...)`), plus `recent_queries` and `fabricated_queries`. Optional `?days` (1–365) and `?limit` (1–100, default 10). A database error returns 503, because there is no useful partial answer.
@@ -149,6 +152,7 @@ erDiagram
 | `JsonType` (JSONB on Postgres, JSON on SQLite) | Offline tests run on SQLite |
 | Gold labels at page level, not chunk id | Chunk ids change when chunking settings change |
 | Pin `langchain-community<0.4` | ragas imports a module removed in 0.4 |
+| Fail an eval run that used the RRF fallback | Cohere rate limits would otherwise silently lower scores |
 
 ## Not built yet
-Eval set and runner, authentication on `/history` and `/ingest`, Docker, CI, Celery + Redis, Streamlit. See `ROADMAP.md`.
+Thresholds (set after the baseline), authentication on `/history` and `/ingest`, Docker, CI, Celery + Redis, Streamlit. See `ROADMAP.md`.

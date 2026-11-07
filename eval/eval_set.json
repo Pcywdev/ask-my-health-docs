@@ -1,0 +1,635 @@
+{
+  "version": "1.3",
+  "questions": [
+    {
+      "id": "q001",
+      "question": "How much moderate-to-vigorous movement should school-age children average each day under WHO guidance?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "An average of at least 60 minutes daily across the week.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            11,
+            35,
+            37
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q002",
+      "question": "According to WHO, on how many days each week should 5- to 17-year-olds fit in vigorous activity and exercises that build muscle and bone?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "WHO says children and adolescents should include vigorous-intensity aerobic activity, plus activities that strengthen muscle and bone, on at least 3 days a week.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            11,
+            35
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q003",
+      "question": "What weekly amount of moderate aerobic exercise does WHO advise for adults aged 18–64?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "150–300 minutes per week.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            12,
+            13,
+            42
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q004",
+      "question": "What does WHO advise for women who were regularly doing vigorous aerobic exercise before they became pregnant?",
+      "category": "population",
+      "answerable": true,
+      "answer": "WHO says women who habitually did vigorous-intensity aerobic activity, or were physically active, before pregnancy can continue these activities during pregnancy and the postpartum period.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            16,
+            17,
+            57
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q005",
+      "question": "Which groups of adults are covered by WHO's physical activity recommendations for people living with chronic conditions?",
+      "category": "population",
+      "answerable": true,
+      "answer": "WHO's chronic-condition recommendations apply to cancer survivors and to adults and older adults living with hypertension, type 2 diabetes, or HIV.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            18,
+            19,
+            62,
+            68
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q006",
+      "question": "What level of exercise can replace sitting time and still offer adults a health benefit?",
+      "category": "factual",
+      "answerable": true,
+      "answer": "Physical activity of any intensity, including light intensity.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            12,
+            13
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q007",
+      "question": "Which kind of sedentary time does WHO particularly want children and teenagers to cut back on?",
+      "category": "population",
+      "answerable": true,
+      "answer": "WHO recommends that children and adolescents limit their sedentary time, especially recreational screen time.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            11,
+            39
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q008",
+      "question": "What type of exercise helps older adults protect themselves from falls?",
+      "category": "factual",
+      "answerable": true,
+      "answer": "Multicomponent activity emphasizing balance and strength.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            14,
+            15,
+            53,
+            55
+          ]
+        },
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            38
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q009",
+      "question": "What makes an activity count as sedentary behaviour in the WHO guidelines?",
+      "category": "definition",
+      "answerable": true,
+      "answer": "WHO defines sedentary behaviour as any waking behaviour that uses 1.5 METs or less while sitting, reclining or lying down, such as desk work, driving or watching TV.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q010",
+      "question": "In WHO's terms, what energy range counts as light-intensity physical activity, and what are some examples?",
+      "category": "definition",
+      "answerable": true,
+      "answer": "Light-intensity activity is between 1.5 and 3 METs, meaning less than three times resting energy use, such as slow walking or bathing that barely raises heart or breathing rate.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q011",
+      "question": "What does one MET stand for when describing exercise intensity?",
+      "category": "definition",
+      "answerable": true,
+      "answer": "One MET (metabolic equivalent of task) is the energy a person uses while sitting at rest; activity intensity is expressed as multiples of that resting rate.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            9
+          ]
+        },
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            20,
+            106
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q012",
+      "question": "Using MET values, where do the US guidelines draw the line between moderate and vigorous activity?",
+      "category": "definition",
+      "answerable": true,
+      "answer": "Moderate-intensity activity needs 3.0 to less than 6.0 METs, such as brisk walking, while vigorous-intensity activity needs 6.0 METs or more, such as running.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            20,
+            105
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q013",
+      "question": "What simple speaking check can tell someone whether their aerobic exercise is moderate or vigorous?",
+      "category": "definition",
+      "answerable": true,
+      "answer": "The talk test: at moderate intensity you can talk but not sing, and at vigorous intensity you can only say a few words before pausing for breath.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            60,
+            71
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q014",
+      "question": "How many grams of protein per kilogram of body weight should endurance athletes eat each day?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q015",
+      "question": "How should older Americans decide how hard to push themselves during physical activity?",
+      "category": "population",
+      "answerable": true,
+      "answer": "The US guidelines say older adults should set their level of effort relative to their own fitness level.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            9,
+            68,
+            110
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q016",
+      "question": "What dose of ibuprofen should be taken for muscle soreness after a hard workout?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q017",
+      "question": "For which ages do the US guidelines provide a special preschool activity recommendation?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "Ages 3–5 years.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            6,
+            8,
+            47
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q018",
+      "question": "How much activity do US guidelines set for kids aged 6 to 17, and on how many days should it include muscle-strengthening work?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "US guidelines say children and adolescents aged 6 through 17 should do 60 minutes or more of moderate-to-vigorous activity every day, with muscle-strengthening activity on at least 3 days a week.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            8,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q019",
+      "question": "Roughly how much in yearly US health care costs is tied to people not getting enough physical activity?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "About $117 billion in annual health care costs, along with about 10 percent of premature deaths, are linked to inadequate physical activity in the US.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            2,
+            14
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q020",
+      "question": "What weekly aerobic target do the US guidelines set for women during pregnancy and after giving birth?",
+      "category": "population",
+      "answerable": true,
+      "answer": "US guidelines advise at least 150 minutes (2 hours 30 minutes) of moderate-intensity aerobic activity a week during pregnancy and the postpartum period, ideally spread across the week.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            9,
+            80
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q021",
+      "question": "What daily amount of activity do the US guidelines suggest as a reasonable target for 3- to 5-year-olds?",
+      "category": "population",
+      "answerable": true,
+      "answer": "A reasonable target for preschool-aged children is about 3 hours a day of activity at any intensity, whether light, moderate or vigorous.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            47
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q022",
+      "question": "What is the US weekly moderate aerobic exercise range for adults seeking major health benefits?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "150–300 minutes per week.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            8,
+            56,
+            68
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q023",
+      "question": "If an American adult does only vigorous aerobic exercise, what weekly amount gives substantial health benefits?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "Adults should do 75 minutes (1 hour 15 minutes) to 150 minutes (2 hours 30 minutes) a week of vigorous-intensity aerobic activity, or an equivalent mix of moderate and vigorous.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            8,
+            56,
+            68
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q024",
+      "question": "Roughly what share of US adults do not meet both the aerobic and the muscle-strengthening guidelines?",
+      "category": "numeric",
+      "answerable": true,
+      "answer": "Nearly 80 percent of US adults do not meet the key guidelines for both aerobic and muscle-strengthening activity, and only about half meet the aerobic guideline.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q025",
+      "question": "How often and how intensely should older adults do balance-and-strength focused activity under WHO guidance?",
+      "category": "population",
+      "answerable": true,
+      "answer": "WHO advises older adults to do varied multicomponent activity emphasising functional balance and strength training at moderate or greater intensity on 3 or more days a week.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            14,
+            15,
+            53
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q026",
+      "question": "Which types of cancer does regular physical activity lower the risk of, according to the US guidelines?",
+      "category": "benefit_risk",
+      "answerable": true,
+      "answer": "The US guidelines list lower risk of cancers of the bladder, breast, colon, endometrium, esophagus, kidney, lung and stomach.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            32,
+            42
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q027",
+      "question": "How long must an exercise bout last to count toward the US adult aerobic recommendation?",
+      "category": "factual",
+      "answerable": true,
+      "answer": "No minimum bout duration; all moderate- or vigorous-intensity activity counts.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            6,
+            23,
+            58,
+            110
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q028",
+      "question": "What benefits for the brain and mental health do the US guidelines link to being active?",
+      "category": "benefit_risk",
+      "answerable": true,
+      "answer": "Physical activity is linked to improved cognition, a lower risk of dementia including Alzheimer's disease, less anxiety and depression, and better sleep and quality of life.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            14,
+            32,
+            40
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q029",
+      "question": "Which health problems does WHO associate with spending a lot of time sedentary as an adult?",
+      "category": "benefit_risk",
+      "answerable": true,
+      "answer": "In adults, high amounts of sedentary behaviour are linked to higher all-cause, cardiovascular and cancer mortality and to more cardiovascular disease, cancer and type 2 diabetes.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            12,
+            13,
+            22,
+            23,
+            48,
+            74
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q030",
+      "question": "What fitness component should older adults add to aerobic and strengthening exercise?",
+      "category": "factual",
+      "answerable": true,
+      "answer": "Balance training.",
+      "gold": [
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            9,
+            68,
+            69
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q031",
+      "question": "Which pregnancy complications does WHO say physical activity helps prevent?",
+      "category": "benefit_risk",
+      "answerable": true,
+      "answer": "WHO says activity during pregnancy and postpartum lowers the risk of pre-eclampsia, gestational hypertension, gestational diabetes, excessive weight gain, delivery complications and postpartum depression, with fewer newborn complications.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            16,
+            17,
+            57
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q032",
+      "question": "What first-aid steps should be taken for a sprained ankle during exercise?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q033",
+      "question": "How many days a week do the WHO and US guidelines each tell adults to do muscle-strengthening exercise?",
+      "category": "multi_page",
+      "answerable": true,
+      "answer": "Both WHO and the US guidelines advise adults to do moderate-or-greater intensity muscle-strengthening activities working all major muscle groups on 2 or more days a week.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            12,
+            13,
+            42
+          ]
+        },
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            8,
+            56,
+            68
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q034",
+      "question": "Which smartwatch brand is officially ranked first for meeting these exercise targets?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q035",
+      "question": "How do WHO and the US guidelines differ in the way they frame the 60-minute daily target for school-age children?",
+      "category": "multi_page",
+      "answerable": true,
+      "answer": "WHO asks children aged 5-17 for an average of 60 minutes a day of moderate-to-vigorous activity across the week, while the US guidelines ask ages 6-17 for 60 minutes or more every day.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            11,
+            35,
+            37
+          ]
+        },
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            8,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q036",
+      "question": "What minimum weekly aerobic activity do both WHO and the US guidelines recommend for pregnant and postpartum women?",
+      "category": "multi_page",
+      "answerable": true,
+      "answer": "Both recommend at least 150 minutes of moderate-intensity aerobic activity a week during pregnancy and the postpartum period.",
+      "gold": [
+        {
+          "source": "9789240015128-eng.pdf",
+          "pages": [
+            16,
+            17,
+            57
+          ]
+        },
+        {
+          "source": "Physical_Activity_Guidelines_2nd_edition.pdf",
+          "pages": [
+            9,
+            80
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q037",
+      "question": "What resting heart rate shows that an adult is fit enough to start vigorous training?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q038",
+      "question": "How many hours of sleep per night does WHO recommend for teenagers?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q039",
+      "question": "How much creatine should older adults take each day to support muscle strength?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    },
+    {
+      "id": "q040",
+      "question": "What is the guaranteed lifespan extension, in exact days, from following the guidelines for one year?",
+      "category": "unanswerable",
+      "answerable": false,
+      "answer": null,
+      "gold": []
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # Record notes
 
 Personal study notes: what each finished stage does and the concepts behind it.
-Status lives in `ROADMAP.md`, design in `architecture.md`. Last updated: 2026-11-01
+Status lives in `ROADMAP.md`, design in `architecture.md`. Last updated: 2026-11-08
 
 **RAG** = retrieve relevant text from your own documents first, then make the LLM answer only from it. Less hallucination, verifiable answers.
 
@@ -57,5 +57,18 @@ Goal: prove our logic is right in seconds, with no network, no cost, no real dat
 - Invariants now pinned: Cohere failure degrades to RRF order; a logging failure never fails `/query`; refusals score 0.0 and drag down only the all-rows mean.
 - Gotcha: the report key is `has_citation`, the DB column is `has_citations`.
 
+## 8. Evaluation
+Unit tests prove the code is *correct*; the eval measures whether answers are *good*, on real data, with real (paid) calls.
+- **Gold set:** questions you wrote, each labelled with the pages that answer it (page-level, not chunk ids, so labels survive re-chunking). ~20% are unanswerable to test refusals. A short reference answer feeds the RAGAS judge.
+- **Page = PDF position**, not the printed page number. PDF extraction also inserts stray spaces ("tr aining"), so `find_pages.py` ignores whitespace.
+- **The same fact on many pages:** guideline PDFs repeat recommendations (summary, chapter, annex). If gold lists only one of them, a correct retrieval of another page scores as a miss. List every page that fully states the answer.
+- **Retrieval metrics (free):** `hit@k` = any gold page in the top k; **MRR** = 1/rank of the first gold chunk (rewards ranking it high); page recall = share of gold pages found.
+- **Answer metrics (free):** citation accuracy (cited numbers exist), `cited_gold` (cited the right page; covers what `validate_citation` cannot), false and correct refusal rates.
+- **RAGAS (LLM-as-judge):** faithfulness = share of the answer's claims supported by the retrieved text (hallucination); answer relevancy; context precision = useful chunks ranked first; context recall = retrieved text covers the reference. The judge is also `gpt-4o-mini`, so it may grade its own style kindly.
+- **Thresholds as a gate:** the runner exits 1 below a threshold, so it can block a merge. Set them from a baseline of 3 runs (`temperature=0` still varies), a little under the worst run.
+- **Baseline (set v1.3, 3 runs):** hit@k 1.00, MRR 0.77, cited_gold 0.97, citation accuracy 1.00, refusals 8/8 correct and 1/32 false, faithfulness ~0.96. Thresholds sit a little under these; `answer_relevancy` is left ungated because it marks good short answers down.
+- **What the eval found:** questions comparing both documents can come back with pages from only one (a false refusal on q035), which is a retrieval design gap, not a bug.
+- **Comparable runs:** every run stores git sha, config and eval-set version; a run where Cohere fell back to RRF is marked invalid, because the fallback quietly changes ranking.
+
 ## Still to come
-Eval set and runner → Docker + CI → Celery/Redis, Streamlit.
+Eval set completion and baseline → Docker + CI → Celery/Redis, Streamlit.
