@@ -1,0 +1,44 @@
+# Local stack: API + its own Postgres.
+#   docker compose up --build      # start (migrations run first)
+#   docker compose down            # stop; add -v to also delete the database
+#
+# This Postgres is separate from the native Windows service (which owns
+# port 5432), so it is published on 5433 and starts empty. Ports bind to
+# 127.0.0.1 only: /history and /ingest have no authentication.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: askdocs
+      POSTGRES_PASSWORD: askdocs  # local-only dev credentials
+      POSTGRES_DB: ask_health_docs
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U askdocs -d ask_health_docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    env_file: .env  # OPENAI_API_KEY, COHERE_API_KEY
+    environment:
+      # Override the native-Postgres values from .env
+      DATABASE_URL: postgresql+psycopg2://askdocs:askdocs@db:5432/ask_health_docs
+      CHROMA_PATH: /app/chroma_db
+    volumes:
+      # Reuse the existing index and PDFs: no paid re-ingest
+      - ./chroma_db:/app/chroma_db
+      - ./data/raw:/app/data/raw
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+volumes:
+  pgdata:

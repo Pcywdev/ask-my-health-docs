@@ -1,0 +1,21 @@
+# Secrets and local state never go into the image
+.env
+.git
+.github
+chroma_db/
+data/
+
+# Not needed at runtime
+tests/
+eval/
+docs/
+*.md
+pytest.ini
+requirements-dev.txt
+
+# Caches
+__pycache__/
+*.pyc
+.ruff_cache/
+.pytest_cache/
+.venv/

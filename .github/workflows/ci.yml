@@ -1,0 +1,76 @@
+# Lint, migration round trip and offline tests on every PR and push to main.
+# Uses dummy API keys and a throwaway Postgres: no secrets, no paid calls.
+# The eval is not run here (needs the PDFs, the Chroma index and paid keys).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ask_health_docs
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      OPENAI_API_KEY: ci-dummy-openai-key
+      COHERE_API_KEY: ci-dummy-cohere-key
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/ask_health_docs
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint
+        run: ruff check .
+
+      # Proves every migration applies, matches the models and reverses cleanly
+      - name: Migrations apply
+        run: alembic upgrade head
+      - name: Models match the schema
+        run: alembic check
+      - name: Migrations reverse
+        run: alembic downgrade base
+      - name: Migrations re-apply
+        run: alembic upgrade head
+
+      - name: Unit tests (offline)
+        run: pytest
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t ask-my-health-docs:ci .

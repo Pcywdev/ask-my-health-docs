@@ -70,5 +70,16 @@ Unit tests prove the code is *correct*; the eval measures whether answers are *g
 - **What the eval found:** questions comparing both documents can come back with pages from only one (a false refusal on q035), which is a retrieval design gap, not a bug.
 - **Comparable runs:** every run stores git sha, config and eval-set version; a run where Cohere fell back to RRF is marked invalid, because the fallback quietly changes ranking.
 
+## 9. Docker + CI
+Goal: the same checks run on every PR without anyone remembering to, and the whole service starts with one command.
+- **CI (GitHub Actions):** a YAML workflow GitHub runs on a fresh Linux machine for every PR and push to `main`. Ours runs ruff, the Alembic round trip (upgrade → check → downgrade base → upgrade) on a throwaway Postgres, pytest, and a `docker build`. A red check blocks a bad merge.
+- **Service container:** CI starts `postgres:17` next to the job, so migrations are proven on a real Postgres, not just SQLite.
+- **No secrets in CI:** dummy API keys only; the unit tests never call OpenAI or Cohere. The eval needs paid keys and the PDFs, so it stays local.
+- **Image vs container:** the Dockerfile is the recipe, the image is the built result, a container is a running copy. Copying `requirements.txt` before the code means a code change does not reinstall dependencies (layer caching).
+- **`.dockerignore`:** keeps `.env`, `.git`, the index and PDFs out of the image, so secrets are never baked in. Keys are passed at run time via `env_file`.
+- **Compose:** one file describing several containers (API + Postgres) and their network; the API reaches the database by its service name `db`. `depends_on` with a healthcheck waits until Postgres accepts connections.
+- **Bind mount vs named volume:** a bind mount shares a host folder (`./chroma_db`, so no paid re-ingest); a named volume (`pgdata`) is Docker-managed storage that survives restarts.
+- **Port gotcha:** the native Postgres owns 5432, so the container is published on 5433. Ports bind to 127.0.0.1 because `/history` and `/ingest` have no auth.
+
 ## Still to come
-Eval set completion and baseline → Docker + CI → Celery/Redis, Streamlit.
+Fix the eval findings (cross-document retrieval, q027) → Celery/Redis, Streamlit.
